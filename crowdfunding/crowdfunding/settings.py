@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+# the model we are going to use for authentication!
 AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
