@@ -50,6 +50,21 @@ class FundraiserDetail(APIView):
         fundraiser = self.get_object(pk)
         serializer = FundraiserDetailSerializer(fundraiser)
         return Response(serializer.data)
+    
+    def put(self, request, pk):
+        fundraiser = self.get_object(pk)
+        serializer = FundraiserDetailSerializer(
+            instance=fundraiser,
+            data=request.data,
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 class PledgeList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
