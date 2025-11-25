@@ -8,10 +8,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
+from rest_framework import status, permissions
 from .models import Fundraiser, Pledge
 from .serializers import FundraiserSerializer, PledgeSerializer, FundraiserDetailSerializer
 
 class FundraiserList(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     # defines the behaviour we want our view to execute when it receives an HTTP GET request.
     def get(self, request):
         # use the Fundraiser model to get a list of all fundraisers in the database
@@ -50,7 +52,7 @@ class FundraiserDetail(APIView):
         return Response(serializer.data)
 
 class PledgeList(APIView):
-
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get(self, request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerializer(pledges, many=True)
