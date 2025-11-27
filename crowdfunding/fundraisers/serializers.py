@@ -7,6 +7,17 @@ class PledgeSerializer(serializers.ModelSerializer):
         model = apps.get_model('fundraisers.Pledge')
         fields = '__all__'
 
+def update(self, instance, validated_data):
+    instance.amount = validated_data.get('amount', instance.amount)
+    instance.comment = validated_data.get('comment', instance.comment)
+    instance.anonymous = validated_data.get('anonymous', instance.anonymous)
+    instance.fundraiser = validated_data.get('fundraiser', instance.fundraiser)
+    instance.supporter = validated_data.get('supporter', instance.supporter)
+    instance.save()
+    return instance
+
+
+
 class FundraiserSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
     # The only thing we need to do is specify which model to convnert and which fields it should include below.
@@ -16,7 +27,6 @@ class FundraiserSerializer(serializers.ModelSerializer):
 
 class FundraiserDetailSerializer(FundraiserSerializer):
     pledges = PledgeSerializer(many=True, read_only=True)
-
 
 def update(self, instance, validated_data):
     instance.title = validated_data.get('title', instance.title)
