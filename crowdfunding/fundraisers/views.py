@@ -9,9 +9,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from rest_framework import status, permissions
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsSupporterOrReadOnly
 from .models import Fundraiser, Pledge
 from .serializers import FundraiserSerializer, PledgeSerializer, FundraiserDetailSerializer
+
+
+
+################################################ Fundraisers
 
 class FundraiserList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -73,6 +77,9 @@ class FundraiserDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
+################################################ Pledges
+
+
 class PledgeList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get(self, request):
@@ -99,7 +106,7 @@ class PledgeDetail(APIView):
 
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly
+        IsSupporterOrReadOnly,   # ⬅️ use this instead
     ]
 
     def get_object(self, pk):
