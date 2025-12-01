@@ -1,7 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-# Create your models here.
+
+
+#############################################
+#Fundraiser model 
+#############################################
+
 
 class Fundraiser(models.Model):
     title = models.CharField(max_length=200)
@@ -16,11 +21,37 @@ class Fundraiser(models.Model):
         related_name='owned_fundraisers'
     )
 
+    def __str__(self):
+        return f"{self.title} — owner: {self.owner.username}"
+
+
+
+#############################################
+#Pledge model with two types: Money and Skill
+#############################################
 
 class Pledge(models.Model):
-    amount = models.IntegerField()
-    comment = models.CharField(max_length=200)
-    anonymous = models.BooleanField()
+    class PledgeType(models.TextChoices):
+        MONEY = 'MONEY', 'Money'
+        SKILL = 'SKILL', 'Skill'
+
+    pledge_type = models.CharField(
+        max_length=10,
+        choices=PledgeType.choices,
+        default=PledgeType.MONEY,
+    )
+
+    # Money pledge fields
+    amount = models.IntegerField(null=True, blank=True)
+
+    # Skill pledge fields
+    skill_description = models.CharField(max_length=200, blank=True)
+    hours = models.IntegerField(null=True, blank=True)
+
+    # Common fields
+    comment = models.CharField(max_length=200, blank=True)
+    anonymous = models.BooleanField(default=False)
+
     fundraiser = models.ForeignKey(
         'Fundraiser',
         on_delete=models.CASCADE,
@@ -31,3 +62,6 @@ class Pledge(models.Model):
         on_delete=models.CASCADE,
         related_name='pledges_made'
     )
+    # this turns internal DB values into friendly text
+    def __str__(self):
+        return f"{self.get_pledge_type_display()} pledge to {self.fundraiser.title}"
