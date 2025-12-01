@@ -1,22 +1,72 @@
 from rest_framework import serializers
 from django.apps import apps
+from .models import Fundraiser, Pledge #Referencing the model class directly since adding extra logic below for pledge type.
+
+
+##############################################
+#Pledge serializers 
+##############################################
 
 class PledgeSerializer(serializers.ModelSerializer):
     supporter = serializers.ReadOnlyField(source='supporter.id')
+
+    pledge_type = serializers.ChoiceField(
+        choices=Pledge.PledgeType.choices,
+        default=Pledge.PledgeType.MONEY,
+    )
+    amount = serializers.IntegerField(required=False, allow_null=True)
+    skill_description = serializers.CharField(required=False, allow_blank=True)
+    hours = serializers.IntegerField(required=False, allow_null=True)
+
     class Meta:
-        model = apps.get_model('fundraisers.Pledge')
+        model = Pledge
         fields = '__all__'
 
-def update(self, instance, validated_data):
-    instance.amount = validated_data.get('amount', instance.amount)
-    instance.comment = validated_data.get('comment', instance.comment)
-    instance.anonymous = validated_data.get('anonymous', instance.anonymous)
-    instance.fundraiser = validated_data.get('fundraiser', instance.fundraiser)
-    instance.supporter = validated_data.get('supporter', instance.supporter)
-    instance.save()
-    return instance
+    def validate(self, attrs):
+        """
+        Enforce:
+        - Money pledge → amount required
+        - Skill pledge → skill_description required
+        """
+
+        # Support both create (attrs only) and update (self.instance + attrs)
+        pledge_type = attrs.get('pledge_type')
+        if self.instance and pledge_type is None:
+            pledge_type = self.instance.pledge_type
+
+        amount = attrs.get('amount')
+        if self.instance and amount is None:
+            amount = self.instance.amount
+
+        skill_description = attrs.get('skill_description')
+        if self.instance and skill_description is None:
+            skill_description = self.instance.skill_description
+
+        if pledge_type == Pledge.PledgeType.MONEY:
+            if amount is None:
+                raise serializers.ValidationError({
+                    "amount": "Money pledges must include an amount."
+                })
+
+        elif pledge_type == Pledge.PledgeType.SKILL:
+            if not skill_description:
+                raise serializers.ValidationError({
+                    "skill_description": "Skill pledges must include a skill description."
+                })
+
+        else:
+            # Safety net: shouldn't really happen because of ChoiceField,
+            # but it's nice to be explicit.
+            raise serializers.ValidationError({
+                "pledge_type": "Invalid pledge type."
+            })
+
+        return attrs
 
 
+#############################################
+#Fundraiser serializers 
+#############################################*
 
 class FundraiserSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
