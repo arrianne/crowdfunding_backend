@@ -136,3 +136,8 @@ class PledgeDetail(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+    
+    def delete(self, request, pk):
+        pledge = self.get_object(pk)  # runs object permissions
+        pledge.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
