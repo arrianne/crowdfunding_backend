@@ -12,8 +12,8 @@ class Building(models.Model):
     cts_number = models.CharField(max_length=50, unique=True)
     address = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    photo = models.URLField(blank=True, null=True)
 
-    photo = models.ImageField(upload_to='buildings/', blank=True, null=True)
 
     # Who owns / administers this building in the system
     owner = models.ForeignKey(
