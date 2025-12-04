@@ -21,6 +21,18 @@ class Fundraiser(models.Model):
         related_name='owned_fundraisers'
     )
 
+    # NEW: link to Building
+    building = models.ForeignKey(
+        'buildings.Building',         # app_label.ModelName
+        on_delete=models.CASCADE,
+        related_name='fundraisers',
+
+        #need to make this required again later
+        null=True,
+        blank=True
+    )
+
+
     def __str__(self):
         return f"{self.title} — owner: {self.owner.username}"
 
