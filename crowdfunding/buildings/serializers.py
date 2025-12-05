@@ -12,9 +12,3 @@ class BuildingSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class BuildingMembershipSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.id')
-
-    class Meta:
-        model = BuildingMembership
-        fields = '__all__'

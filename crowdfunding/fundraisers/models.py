@@ -25,11 +25,7 @@ class Fundraiser(models.Model):
     building = models.ForeignKey(
         'buildings.Building',         # app_label.ModelName
         on_delete=models.CASCADE,
-        related_name='fundraisers',
-
-        #need to make this required again later
-        null=True,
-        blank=True
+        related_name='fundraisers'
     )
 
 
