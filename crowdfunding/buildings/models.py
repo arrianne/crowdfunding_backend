@@ -28,43 +28,4 @@ class Building(models.Model):
     def __str__(self):
         return self.name
 
-#############################################
-#BuildingMembership model
-#############################################
 
-# represents the relationship between a user and a building
-
-class BuildingMembership(models.Model):
-    """
-    A user belonging to a building in some role
-    (committee, resident, tradie, etc).
-    """
-    COMMITTEE = 'committee'
-    RESIDENT = 'resident'
-    TRADIE = 'tradie'
-
-    ROLE_CHOICES = [
-        (COMMITTEE, 'Committee Member'),
-        (RESIDENT, 'Resident'),
-        (TRADIE, 'Tradesperson'),
-    ]
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='building_memberships'
-    )
-    building = models.ForeignKey(
-        Building,
-        on_delete=models.CASCADE,
-        related_name='memberships'
-    )
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
-
-    joined_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'building')
-
-    def __str__(self):
-        return f"{self.user} → {self.building} ({self.role})"

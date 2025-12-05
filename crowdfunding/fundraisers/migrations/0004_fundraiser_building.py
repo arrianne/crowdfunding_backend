@@ -3,6 +3,23 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
+# def populagete_building_field(apps, schema_editor):
+#     Fundraiser = apps.get_model('fundraisers', 'Fundraiser')
+#     # BuildingMembership = apps.get_model('buildings', 'BuildingMembership')
+#     Building = apps.get_model('buildings', 'Building')
+
+#     for fundraiser in Fundraiser.objects.all():
+#         building = Building.objects.create(
+#             name=f"Building for Fundraiser {fundraiser.id}",
+#             owner=fundraiser.owner,
+#         )
+#         fundraiser.building = building
+#         fundraiser.save()
+
+
+# def deletete_building_field(apps, schema_editor):
+#     pass
+
 
 class Migration(migrations.Migration):
 
@@ -17,4 +34,15 @@ class Migration(migrations.Migration):
             name='building',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='fundraisers', to='buildings.building'),
         ),
+
+        
+        # migrations.RunPython(
+        #     populagete_building_field,
+        #     reverse_code=deletete_building_field
+        # ),
+        # migrations.AlterField(
+        #     model_name='fundraiser',
+        #     name='building',
+        #     field=models.ForeignKey(blank=True, null=False, on_delete=django.db.models.deletion.CASCADE, related_name='fundraisers', to='buildings.building'),
+        # ),
     ]
