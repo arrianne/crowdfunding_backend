@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
 
 
 
@@ -13,7 +14,7 @@ class Fundraiser(models.Model):
     description = models.TextField()
     goal = models.IntegerField()
     image = models.URLField()
-    is_open = models.BooleanField()
+    is_open = models.BooleanField(default=True)
     date_created = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(
         get_user_model(),
@@ -25,13 +26,36 @@ class Fundraiser(models.Model):
     building = models.ForeignKey(
         'buildings.Building',         # app_label.ModelName
         on_delete=models.CASCADE,
-        related_name='fundraisers'
-    )
+        related_name='fundraisers',
 
+    )
 
     def __str__(self):
         return f"{self.title} — owner: {self.owner.username}"
 
+    # HELPER PROPERTIES FOR FUNDRAISER MODEL
+
+    # self.pledges uses related_name='pledges' on Pledge.fundraiser.
+    # Sum('amount') will ignore NULL amounts, so pure skill pledges don’t break anything.
+
+    # Total money pledged (ignores skill-only pledges because amount is null)
+    @property
+    def total_pledged(self):
+        result = self.pledges.aggregate(total=Sum('amount'))['total']
+        return result or 0
+
+    # Percentage of goal reached
+    @property
+    def progress_percentage(self):
+        if self.goal and self.goal > 0:
+            return round((self.total_pledged / self.goal) * 100, 1)
+        return 0
+    
+    # has this fundraiser hit or passed its goal?
+    @property
+    def is_funded(self):
+        return self.total_pledged >= self.goal
+    
 
 
 #############################################

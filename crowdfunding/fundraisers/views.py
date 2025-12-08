@@ -15,7 +15,9 @@ from .serializers import FundraiserSerializer, PledgeSerializer, FundraiserDetai
 
 
 
-################################################ Fundraisers
+#############################################
+#Fundraisers
+#############################################*
 
 class FundraiserList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -77,11 +79,14 @@ class FundraiserDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-################################################ Pledges
+#############################################
+#Pledges
+#############################################*
 
 
 class PledgeList(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def get(self, request):
         pledges = Pledge.objects.all()
         serializer = PledgeSerializer(pledges, many=True)
@@ -90,7 +95,15 @@ class PledgeList(APIView):
     def post(self, request):
         serializer = PledgeSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(supporter=request.user)
+            # Save pledge with current user as supporter
+            pledge = serializer.save(supporter=request.user)
+            fundraiser = pledge.fundraiser
+
+            # 🔹 If this pledge tips the fundraiser over the goal, close it
+            if fundraiser.is_funded and fundraiser.is_open:
+                fundraiser.is_open = False
+                fundraiser.save(update_fields=['is_open'])
+
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
@@ -99,14 +112,12 @@ class PledgeList(APIView):
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
-    
 
 
 class PledgeDetail(APIView):
-
     permission_classes = [
         permissions.IsAuthenticatedOrReadOnly,
-        IsSupporterOrReadOnly,   # ⬅️ use this instead
+        IsSupporterOrReadOnly,
     ]
 
     def get_object(self, pk):
@@ -138,6 +149,6 @@ class PledgeDetail(APIView):
         )
     
     def delete(self, request, pk):
-        pledge = self.get_object(pk)  # runs object permissions
+        pledge = self.get_object(pk)
         pledge.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
