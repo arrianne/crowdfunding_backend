@@ -96,6 +96,9 @@ class FundraiserSerializer(serializers.ModelSerializer):
     total_pledged = serializers.SerializerMethodField()
     progress_percent = serializers.SerializerMethodField()
 
+    # read-only goal reached flag
+    is_funded = serializers.ReadOnlyField()
+
     class Meta:
         model = Fundraiser
         fields = '__all__'

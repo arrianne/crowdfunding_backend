@@ -99,7 +99,7 @@ class PledgeList(APIView):
             pledge = serializer.save(supporter=request.user)
             fundraiser = pledge.fundraiser
 
-            # 🔹 If this pledge tips the fundraiser over the goal, close it
+            # If this pledge tips the fundraiser over the goal, close it
             if fundraiser.is_funded and fundraiser.is_open:
                 fundraiser.is_open = False
                 fundraiser.save(update_fields=['is_open'])
