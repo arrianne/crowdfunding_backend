@@ -4,6 +4,8 @@ from .serializers import BuildingSerializer
 
 from fundraisers.models import Fundraiser
 from fundraisers.serializers import FundraiserSerializer
+from fundraisers.permissions import IsOwnerOrReadOnly
+
 
 
 class BuildingList(generics.ListCreateAPIView):
@@ -18,7 +20,11 @@ class BuildingList(generics.ListCreateAPIView):
 class BuildingDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Building.objects.all()
     serializer_class = BuildingSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    ]
+
 
 
 class BuildingFundraisersList(generics.ListAPIView):
