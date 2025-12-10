@@ -7,7 +7,7 @@ from .models import Fundraiser, Pledge
 ##############################################
 
 class PledgeSerializer(serializers.ModelSerializer):
-    supporter = serializers.ReadOnlyField(source='supporter.id')
+    supporter = serializers.SerializerMethodField()
 
     pledge_type = serializers.ChoiceField(
         choices=Pledge.PledgeType.choices,
@@ -20,6 +20,15 @@ class PledgeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pledge
         fields = '__all__'
+
+    def get_supporter(self, obj):
+        """
+        If the pledge is anonymous, do not expose supporter id.
+        Otherwise, return supporter.id as before.
+        """
+        if obj.anonymous:
+            return "Anonymous"
+        return obj.supporter.id     
 
     def validate(self, attrs):
         """
@@ -79,7 +88,6 @@ class PledgeSerializer(serializers.ModelSerializer):
 
         else:
             # Safety net: shouldn't really happen because of ChoiceField,
-            # but it's nice to be explicit.
             raise serializers.ValidationError({
                 "pledge_type": "Invalid pledge type."
             })
