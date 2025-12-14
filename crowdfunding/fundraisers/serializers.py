@@ -38,7 +38,7 @@ class PledgeSerializer(serializers.ModelSerializer):
         - Block ALL *new* pledges (money + skill) once goal is reached or fundraiser is closed.
         """
 
-        # ---- Resolve pledge_type, amount, skill_description for create + update ----
+        #  Resolve pledge_type, amount, skill_description for create + update
         pledge_type = attrs.get('pledge_type')
         if self.instance and pledge_type is None:
             pledge_type = self.instance.pledge_type
@@ -51,7 +51,7 @@ class PledgeSerializer(serializers.ModelSerializer):
         if self.instance and skill_description is None:
             skill_description = self.instance.skill_description
 
-        # ---- Resolve fundraiser ----
+        # Resolve fundraiser 
         fundraiser = attrs.get('fundraiser')
         if self.instance and fundraiser is None:
             fundraiser = self.instance.fundraiser
@@ -61,15 +61,16 @@ class PledgeSerializer(serializers.ModelSerializer):
                 "fundraiser": "A fundraiser must be specified for this pledge."
             })
 
-        # ---- Block new pledges if goal reached / fundraiser closed ----
-        # Only for CREATE so you can still edit existing pledges if needed.
+        # Once a fundraiser is closed or fully funded, pledges become read-only.
+        # This prevents changes to pledge amounts, skills, or anonymity after completion.
+
         
         if fundraiser.is_funded or not fundraiser.is_open:
             raise serializers.ValidationError(
                 "This fundraiser has reached its goal and is no longer accepting pledges."
             )
 
-        # ---- Base validations: money vs skill ----
+        # Base validations: money vs skill
         if pledge_type == Pledge.PledgeType.MONEY:
             if amount is None:
                 raise serializers.ValidationError({
@@ -110,8 +111,7 @@ class FundraiserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fundraiser
         fields = '__all__'
-        # You don't actually need extra_fields here; DRF will include
-        # total_pledged and progress_percent automatically because they are declared.
+        
 
     def get_total_pledged(self, obj):
         # Use the model helper so there's a single source of truth
@@ -123,7 +123,6 @@ class FundraiserSerializer(serializers.ModelSerializer):
             return round((total / obj.goal) * 100, 2)
         return 0
 
-    # If you really want a custom update (you don't *have* to override)
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get('description', instance.description)
