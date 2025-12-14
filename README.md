@@ -134,20 +134,20 @@ Authorization: Token <your_token>
 
 ## User Access Rules
 
-| Action                    | Who can do it                   |
-| ------------------------- | ------------------------------- |
-| Register a new user       | Anyone                          |
-| List all users            | Admin users only                |
-| View a specific user      | The user themselves or an admin |
-| Create a building         | Authenticated users             |
-| Edit / delete a building  | Building owner only             |
-| Create a fundraiser       | Authenticated users             |
-| Edit / close a fundraiser | Fundraiser owner only           |
-| Create a pledge           | Authenticated users             |
+| Action                     | Who can do it                   |
+| -------------------------- | ------------------------------- |
+| Register a new user        | Anyone                          |
+| List all users             | Admin users only                |
+| View a specific user       | The user themselves or an admin |
+| Create a building          | Authenticated users             |
+| Edit / delete a building   | Building owner only             |
+| Create a fundraiser        | Authenticated users             |
+| Edit / delete a fundraiser | Fundraiser owner only           |
+| Create a pledge            | Authenticated users             |
+| Edit / delete a pledge     | Pledge supporter only           |
+| View pledges               | Anyone                          |
 
-| Edit / delete
-
----
+> _Once a fundraiser is closed or fully funded, pledges become read-only and can no longer be edited or deleted._
 
 ## Anonymous Pledges
 
