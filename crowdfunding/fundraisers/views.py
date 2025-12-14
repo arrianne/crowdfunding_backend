@@ -102,6 +102,14 @@ class FundraiserDetail(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    def delete(self, request, pk):
+        """
+        DELETE: Only the owner may delete this fundraiser.
+        Associated pledges are deleted automatically via DB cascade.
+        """
+        fundraiser = self.get_object(pk)
+        fundraiser.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #############################################
 #Pledges

@@ -19,23 +19,21 @@ Arrianne O'Shea
     - [Automatic Closure \& Pledge Blocking](#automatic-closure--pledge-blocking)
   - [Step-by-Step Usage Guide](#step-by-step-usage-guide)
     - [1️⃣ Register a New User](#1️⃣-register-a-new-user)
-    - [User Stories](#user-stories)
-    - [Front End Pages/Functionality](#front-end-pagesfunctionality)
+  - [User Stories](#user-stories)
+  - [Front End Pages/Functionality](#front-end-pagesfunctionality)
     - [Fundraisers](#fundraisers)
     - [Pledges](#pledges)
-    - [API Spec](#api-spec)
+  - [API Spec](#api-spec)
     - [Users](#users)
     - [Buildings](#buildings)
     - [Fundraisers](#fundraisers-1)
     - [Pledges](#pledges-1)
-    - [DB Schema](#db-schema)
   - [Database Schema](#database-schema)
-  - [Deployment \& API Demonstration](#deployment--api-demonstration)
-    - [Deployed Project](#deployed-project)
-    - [Insomnia API Testing Evidence](#insomnia-api-testing-evidence)
-      - [Successful GET Request](#successful-get-request)
-      - [Successful POST Request](#successful-post-request)
-      - [Token Authentication Response](#token-authentication-response)
+  - [Deployed Project](#deployed-project)
+  - [Insomnia API Testing Evidence](#insomnia-api-testing-evidence)
+    - [Successful GET Request](#successful-get-request)
+    - [Successful POST Request](#successful-post-request)
+    - [Token Authentication Response](#token-authentication-response)
   - [Security Considerations](#security-considerations)
 
 ## Project Overview
@@ -223,7 +221,7 @@ Response
 }
 ```
 
-### User Stories
+## User Stories
 
 **Buildings**
 
@@ -248,7 +246,7 @@ Response
 - As a visitor, I can read all pledges.
 - As a user, I am prevented from pledging once a fundraiser is funded or closed.
 
-### Front End Pages/Functionality
+## Front End Pages/Functionality
 
 **Buildings**
 
@@ -272,7 +270,7 @@ Response
 - Read all pledges
 - Pledging disabled once goal is reached
 
-### API Spec
+## API Spec
 
 ### Users
 
@@ -314,8 +312,6 @@ Response
 | `/pledges/<id>/` | PUT    | Update pledge   | `{ "amount?", "skill_description?", "hours?", "anonymous?", "comment?" }`                             | Supporter |
 | `/pledges/<id>/` | DELETE | Delete pledge   | —                                                                                                     | Supporter |
 
-### DB Schema
-
 ## Database Schema
 
 ![Database Schema](docs/StrataBoostERD.drawio.png)
@@ -327,20 +323,18 @@ Key relationships:
 - A **fundraiser** can have many **pledges**
 - A **pledge** belongs to exactly one **fundraiser**
 
-## Deployment & API Demonstration
-
-### Deployed Project
+## Deployed Project
 
 🔗 **Live API:**  
 https://crowdfunding-app-e10aea27326f.herokuapp.com
 
 ---
 
-### Insomnia API Testing Evidence
+## Insomnia API Testing Evidence
 
 The following screenshots demonstrate successful interaction with the API using Insomnia.
 
-#### Successful GET Request
+### Successful GET Request
 
 Example: retrieving a list of buildings.
 
@@ -348,7 +342,7 @@ Example: retrieving a list of buildings.
 
 ---
 
-#### Successful POST Request
+### Successful POST Request
 
 Example: creating a new fundraiser.
 
@@ -356,7 +350,7 @@ Example: creating a new fundraiser.
 
 ---
 
-#### Token Authentication Response
+### Token Authentication Response
 
 Example: obtaining an authentication token after logging in.
 
