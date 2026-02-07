@@ -102,6 +102,12 @@ class PledgeSerializer(serializers.ModelSerializer):
 
 class FundraiserSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
+    owner_username = serializers.CharField(
+        source="owner.username",
+        read_only=True
+    )
+
+
     total_pledged = serializers.SerializerMethodField()
     progress_percent = serializers.SerializerMethodField()
 
