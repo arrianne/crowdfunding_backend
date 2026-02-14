@@ -8,6 +8,7 @@ from .models import Fundraiser, Pledge
 
 class PledgeSerializer(serializers.ModelSerializer):
     supporter = serializers.SerializerMethodField()
+    supporter_username = serializers.SerializerMethodField()
 
     pledge_type = serializers.ChoiceField(
         choices=Pledge.PledgeType.choices,
@@ -19,16 +20,27 @@ class PledgeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pledge
-        fields = '__all__'
+        fields = [
+            "id", "pledge_type", "amount", "skill_description", "hours",
+            "comment", "anonymous", "fundraiser", "supporter", "supporter_username",
+        ]
 
     def get_supporter(self, obj):
         """
         If the pledge is anonymous, do not expose supporter id.
-        Otherwise, return supporter.id as before.
+        Otherwise, return supporter.id for permission checks.
         """
         if obj.anonymous:
             return "Anonymous"
-        return obj.supporter.id     
+        return obj.supporter.id
+
+    def get_supporter_username(self, obj):
+        """
+        Return supporter's username for display. Anonymous pledges return None.
+        """
+        if obj.anonymous:
+            return None
+        return obj.supporter.username
 
     def validate(self, attrs):
         """
